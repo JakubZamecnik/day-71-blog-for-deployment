@@ -50,7 +50,7 @@ gravatar = Gravatar(app,
 # CREATE DATABASE
 class Base(DeclarativeBase):
     pass
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI", "sqlite:///posts.db")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI", "postgresql://posts_database_7hmj_user:T8DfQOyGGNjQpAm26g065dBVbZF1mqyH@dpg-d3viuq0gjchc73d9vu10-a/posts_database_7hmj")
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
@@ -115,6 +115,10 @@ def admin_only(f):
         return f(*args, **kwargs)
 
     return decorated_function
+
+@app.route("/healthz")
+def health_check():
+    return "OK", 200
 
 
 # Register new users into the User database
@@ -293,4 +297,5 @@ def contact():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
